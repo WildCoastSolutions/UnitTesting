@@ -51,7 +51,5 @@ int main(int argc, char* argv[])
 	AssertThrows(ThrowsInvalidArgument(), std::logic_error);		// Parent classes are also accepted
 	AssertThrows(ThrowsInvalidArgument(), std::exception);			// Parent classes are also accepted
 	AssertThrows(ThrowsOutOfRange(), std::out_of_range);
-
-	EndTest
 }
 
