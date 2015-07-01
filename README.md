@@ -4,16 +4,18 @@ This is a simple header only unit testing library that implements the bare minim
 
 It supports:
 
-* AssertTrue
-* AssertEquals
-* AssertThrows
+```
+AssertTrue(value)
+AssertEquals(a, b)
+AssertThrows(code, exception_type)
+```
 
 It displays file and line number on failure in a format that allows double clicking to get to the line in Visual Studio.
 
-Additional details can be shown if you compile with WILD_UNITTESTING_SHOW_FAILURE_DETAILS.
+Additional details can be shown on failure if you compile with the preperocessor flag ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS```.
 This will attempt to print out the values that were compared. Note that the types being compared must be streamable to a stringstream. 
 
-	// x is streamable if "cout << x" compiles.
+```x is streamable if "cout << x" compiles.```
 
 You can add this to your classes by overloading the << operator.
 
@@ -25,11 +27,11 @@ This means that the tests are run on every build, and the build fails if any tes
 
 ## Example
 
-Say I am building a StateMachine library and want to test the basic functionality, such as transitioning between states. This code is in a library called StateMachine which compiles to a static library StateMachine.lib.
+Say I am building a StateMachine library and want to test the basic functionality, such as transitioning between states. This code is in a library called StateMachine which compiles to a static library ```StateMachine.lib```.
 
-I create the project StateMachine.Test in a folder related to StateMachine (sub folder or alongside) and add the StateMachine library as a reference and include UnitTesting.h. This project builds an executable that is designed to return 0 if all tests pass, otherwise the number of failures. I add this to the solution so it is built on a full rebuild.
+I create the project ```StateMachine.Test``` in a folder related to StateMachine (sub folder or alongside) and add the StateMachine library as a reference and include ```UnitTesting.h```. This project builds an executable that is designed to return 0 if all tests pass, otherwise the number of failures. I add this to the solution so it is built on a full rebuild.
 
-Note that the macro EndTest prints out the results and outputs the required value for you.
+Note that the macro ```EndTest``` prints out the results and outputs the required value for you.
 
 ```C++
 #include "StateMachine.h"
@@ -64,4 +66,4 @@ int main(int argc, char* argv[])
 }
 ```
 
-In the post build step of StateMachine.Test I add "$(TargetPath)" (quotes included) which causes the exe, and therefore the tests to be run every time the project successfully builds.
+In the post build step of ```StateMachine.Test``` I add ```"$(TargetPath)"``` (quotes included) which causes the exe, and therefore the tests to be run every time the project successfully builds.
