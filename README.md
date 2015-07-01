@@ -1,4 +1,4 @@
-# cpp-unit-testing
+# Wild Coast C++ Unit Testing
 
 This is a simple header only unit testing library that implements the bare minimum functionality needed to effectively unit test. It is the result of having built a much larger and more comprehensive unit testing library and realising that most of it went unused and the extra boilerplate wasn't adding much.
 
@@ -27,11 +27,11 @@ This means that the tests are run on every build, and the build fails if any tes
 
 Say I am building a StateMachine library and want to test the basic functionality, such as transitioning between states. This code is in a library called StateMachine which compiles to a static library StateMachine.lib.
 
-I create the project StateMachine.Test in a folder related to StateMachine (sub folder or alongside) and add the StateMachine library as a reference and include UnitTesting.h. This project builds an executable that is designed to return 0 if all tests pass, otherwise the number of failures.
+I create the project StateMachine.Test in a folder related to StateMachine (sub folder or alongside) and add the StateMachine library as a reference and include UnitTesting.h. This project builds an executable that is designed to return 0 if all tests pass, otherwise the number of failures. I add this to the solution so it is built on a full rebuild.
 
 Note that the macro EndTest prints out the results and outputs the required value for you.
 
-```
+```C++
 #include "StateMachine.h"
 #include "UnitTesting.h"
 
