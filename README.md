@@ -1,4 +1,4 @@
-# Wild Coast C++ Unit Testing
+# C++ Unit Testing
 
 This is a simple header only unit testing library that implements the bare minimum functionality needed to effectively unit test. It is the result of having built a much larger and more comprehensive unit testing library and realising that most of it went unused and the extra boilerplate wasn't adding much.
 
@@ -23,7 +23,7 @@ You can add this to your classes by overloading the << operator.
 
 ## Platforms
 
-It was built on VS2013 but should work on earlier versions, and tested on gcc 4.8.2. Info in this document is VS specific but all the concepts should translate fine to Linux. The Linux build uses cmake, to test the lib it you can clone it, enter the directory and use
+It was built on VS2013 but should work on earlier versions, and tested on gcc 4.8.2. Info in this document is VS specific but all the concepts translate to Linux. The Linux build uses cmake, to test the lib it you can clone it, enter the directory and use
 
 ```
 cmake .
@@ -50,7 +50,6 @@ Note that the macro ```EndTest``` prints out the results and outputs the require
 #include "UnitTesting.h"
 
 using namespace Wild::StateMachine;
-using namespace std;
 
 int main(int argc, char* argv[])
 {
