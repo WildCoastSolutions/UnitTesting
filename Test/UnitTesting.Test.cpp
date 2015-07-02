@@ -59,7 +59,10 @@ int main(int argc, char* argv[])
     AssertThrows(ThrowsInvalidArgument(), std::invalid_argument);
 
     if (Failed() == 1)  // we called Fail directly to test the output so we expect one failure
+    {
+        std::cout << "Unit testing tests passed" << std::endl;
         return 0;
+    }
     else
         return 1;
 }
