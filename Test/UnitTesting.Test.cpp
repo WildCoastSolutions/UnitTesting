@@ -17,6 +17,8 @@ void ThrowsOutOfRange()
 int main(int argc, char* argv[])
 {
     AssertTrue(true);
+    bool bar = true;
+    AssertTrue(bar);
     AssertEquals(13, 13);
     AssertEquals(true, true);
     AssertEquals(false, false);
@@ -31,18 +33,19 @@ int main(int argc, char* argv[])
     std::stringstream output;
     std::streambuf* original = std::cout.rdbuf(output.rdbuf());
 
-    test.Assert(false, "filename", 2, "false == false");
+    test.Assert(false, "filename", 2, "(false == true)");
     std::string text = output.str();
     output.str("");
 
-    Fail("test"); std::string failLine = std::string(__FILE__) + "(" + std::to_string(__LINE__) + ")";
+    std::stringstream failFileAndLine;
+    Fail("test"); failFileAndLine << __FILE__ << "(" << __LINE__ << ")";
     std::string text2 = output.str();
 
     std::cout.rdbuf(original);
 
 #ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
-    AssertEquals(text, "filename(2): test failed, tried \"false == false\"\n");
-    AssertEquals(text2, failLine + ": test failed, tried \"test\"\n");
+    AssertEquals(text, "filename(2): test failed, (false == true)\n");
+    AssertEquals(text2, failFileAndLine.str() + ": test failed, test\n");
 #else
     AssertEquals(text, "filename(2): test failed\n");
     AssertEquals(text2, failLine + ": test failed\n");

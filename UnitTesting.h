@@ -33,6 +33,9 @@ namespace Wild
         {
         public:
 
+            Test() : passed(0), failed(0), total(0)
+            {}
+
             // Test whether a boolean condition is true or false and handle the result
             void Assert(bool test, const std::string &file, int line, const std::string &details = 0)
             {
@@ -50,7 +53,7 @@ namespace Wild
             void Fail(const std::string &file, int line, const std::string &details)
             {
 #ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
-                std::cout << file << "(" << line << "): test failed, tried \"" << details << "\"" << std::endl;
+                std::cout << file << "(" << line << "): test failed, " << details << std::endl;
 #else
                 std::cout << file << "(" << line << "): test failed" << std::endl;
 #endif
@@ -64,9 +67,9 @@ namespace Wild
             }
 
             // Running counts for relevant stats. We'll leave them public and trust the user application not to modify them.
-            int passed = 0;
-            int failed = 0;
-            int total = 0;
+            int passed;
+            int failed;
+            int total;
         };
 
         // Make sure that each file that includes this header is using the same object.
@@ -96,12 +99,13 @@ namespace Wild
 
 // Macros for use by user applications
 
-#define AssertTrue(x) AssertTrueWithDetails(x, "value is not true");
+#define AssertTrue(x) AssertTrueWithDetails(x, #x " does not evaluate to true");
 
 #ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
 static std::stringstream wildUnitTestingSs;
 #define AssertEquals(x, y) \
-    wildUnitTestingSs << x << " == " << y; \
+    wildUnitTestingSs << "(" << #x << " == " << #y <<")" \
+        << ", actual comparison performed (" << x << " == " << y << ")"; \
     AssertTrueWithDetails(x == y, wildUnitTestingSs.str()); \
     wildUnitTestingSs.str("");
 #else
