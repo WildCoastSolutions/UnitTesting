@@ -14,7 +14,7 @@ AssertThrows(code, exception_type)
 
 It displays file and line number on failure in a format that allows double clicking to get to the line in Visual Studio.
 
-Additional details can be shown on failure if you compile with the preperocessor flag ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS```.
+Additional details can be shown on failure if you compile with the preprocessor flag ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS```.
 This will attempt to print out the values that were compared. Note that the types being compared must be streamable to a stringstream. 
 
 ```x is streamable if "cout << x" compiles.```
@@ -33,9 +33,9 @@ Test\UnitTesting
 
 ## Suggested Use
 
-The way we use it is to link the code under test and the unit testing framework into an executable project which contains testing code. This executable is run as a post build step  and returns the number of test failures. 
+The way we use it is to link the code under test and the unit testing framework into an executable project which contains testing code. This executable is run as a post build step and returns the number of test failures. 
 
-This means that the tests are run on every build, and the build fails if any tests fail. It does mean that code under test needs to be divided up into small, self contained libraries, which works well for our project architecture.
+This means that the tests are run on every build, and the build fails if any tests fail. It does mean that code under test needs to be divided up into small, self-contained libraries, which works well for our project architecture.
 
 ## Example
 
