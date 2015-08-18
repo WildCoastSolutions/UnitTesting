@@ -122,6 +122,26 @@ static std::stringstream wildUnitTestingSs;
 catch (ex){ Pass(); } \
 catch (...){ Fail(""); }
 
+#define AssertPrints(code, x) { \
+    std::stringstream wildUnitTestingOutput; \
+    std::streambuf* wildUnitTestingOriginal = std::cout.rdbuf(wildUnitTestingOutput.rdbuf()); \
+    code; \
+    std::string wildUnitTestingOutputText = wildUnitTestingOutput.str(); \
+    wildUnitTestingOutput.str(""); \
+    std::cout.rdbuf(wildUnitTestingOriginal); \
+    AssertEquals(wildUnitTestingOutputText, x) \
+}
+
+#define AssertPrintsToStderr(code, x) { \
+    std::stringstream wildUnitTestingOutput; \
+    std::streambuf* wildUnitTestingOriginal = std::cerr.rdbuf(wildUnitTestingOutput.rdbuf()); \
+    code; \
+    std::string wildUnitTestingOutputText = wildUnitTestingOutput.str(); \
+    wildUnitTestingOutput.str(""); \
+    std::cerr.rdbuf(wildUnitTestingOriginal); \
+    AssertEquals(wildUnitTestingOutputText, x) \
+}
+
 #define EndTest Wild::UnitTesting::AllTests().Results(); return Wild::UnitTesting::AllTests().failed;
 
 
