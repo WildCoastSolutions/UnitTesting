@@ -4,7 +4,7 @@ This is a simple header only unit testing library that implements the bare minim
 
 # Sample Code
 
-```
+```C++
 #include "UnitTesting.h"
 
 using namespace std;
@@ -34,7 +34,7 @@ All you need to use this library is to put ```UnitTesting.h``` in your project a
 
 It supports:
 
-```
+```C++
 AssertTrue(value)
 AssertEquals(a, b)
 AssertThrows(code, exception_type)
@@ -46,7 +46,7 @@ EndTest  	// Prints results and exits with the number of failures
 
 If a test fails it prints file and line number on failure in a format that allows double clicking to get straight to the line in Visual Studio. For example:
 
-```
+```C++
 AssertEquals(x, y);  // x = 1, y = 2
 ```
 results in
