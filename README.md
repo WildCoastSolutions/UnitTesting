@@ -2,6 +2,8 @@
 
 This is a simple header only unit testing library that implements the bare minimum functionality needed to effectively unit test. It is the result of having built a much larger and more comprehensive unit testing library and realising that most of it went unused and the extra boilerplate wasn't adding much.
 
+# Usage
+
 All you need to use this library is ```UnitTesting.h```, for how to use it have a look at ```Test/UnitTesting.Test.cpp``` and the example below.
 
 It supports:
@@ -10,9 +12,10 @@ It supports:
 AssertTrue(value)
 AssertEquals(a, b)
 AssertThrows(code, exception_type)
+AssertPrints(code, string)
 ```
 
-It displays file and line number on failure in a format that allows double clicking to get to the line in Visual Studio.
+If a test fails it prints file and line number on failure in a format that allows double clicking to get to the line in Visual Studio.
 
 Additional details can be shown on failure if you compile with the preprocessor flag ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS```.
 This will attempt to print out the values that were compared. Note that the types being compared must be streamable to a stringstream. 
