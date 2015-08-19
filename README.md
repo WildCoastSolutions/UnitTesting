@@ -2,9 +2,35 @@
 
 This is a simple header only unit testing library that implements the bare minimum functionality needed to effectively unit test. It is the result of having built a much larger and more comprehensive unit testing library and realising that most of it went unused and the extra boilerplate wasn't adding much.
 
+# Sample Code
+
+```
+#include "UnitTesting.h"
+
+using namespace std;
+
+void ThrowException() { throw runtime_error("kaboom"); }
+
+int main(int argc, char* argv[])
+{
+	int x = 1;
+	int y = 2;
+	string s = "foo";
+
+	AssertTrue(x == y - 1);
+	AssertEquals(x + 1, y);
+	AssertEquals(s, "foo");
+	AssertThrows(ThrowException(), runtime_error);
+	AssertPrints(cout << s << "bar", "foobar");
+
+	EndTest
+}
+
+```
+
 # Usage
 
-All you need to use this library is ```UnitTesting.h```, for how to use it have a look at ```Test/UnitTesting.Test.cpp``` and the example below.
+All you need to use this library is to put ```UnitTesting.h``` in your project and include it in your test code.
 
 It supports:
 
@@ -13,12 +39,28 @@ AssertTrue(value)
 AssertEquals(a, b)
 AssertThrows(code, exception_type)
 AssertPrints(code, string)
+AssertPrintsToStderr(code, string)
+
+EndTest  	// Prints results and exits with the number of failures
 ```
 
-If a test fails it prints file and line number on failure in a format that allows double clicking to get to the line in Visual Studio.
+If a test fails it prints file and line number on failure in a format that allows double clicking to get straight to the line in Visual Studio. For example:
 
-Additional details can be shown on failure if you compile with the preprocessor flag ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS```.
-This will attempt to print out the values that were compared. Note that the types being compared must be streamable to a stringstream. 
+```
+AssertEquals(x, y);  // x = 1, y = 2
+```
+results in
+```
+d:\wildcoast\github\unittesting\test\unittesting.test.cpp(29): test failed
+```
+or
+```
+d:\wildcoast\github\unittesting\test\unittesting.test.cpp(29): test failed, (x == y), actual comparison performed (1 == 2)
+```
+if ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS``` has been defined.
+
+As shown above, additional details can be shown on failure if you compile with the preprocessor flag ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS``` defined.
+This will attempt to print out the values that were compared. Note that the types being compared must be streamable to a stringstream.
 
 ```x is streamable if "cout << x" compiles.```
 
@@ -72,9 +114,6 @@ int main(int argc, char* argv[])
 
 	AssertEquals(rec.startCount, 2);
 	AssertEquals(rec.stopCount, 1);
-
-	// AssertThrows example
-    AssertThrows(ThrowsOutOfRange(), std::out_of_range);
 
 	EndTest
 }

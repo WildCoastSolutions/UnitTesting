@@ -3,7 +3,6 @@
 
 using namespace Wild::UnitTesting;
 
-
 void ThrowsInvalidArgument()
 {
     throw std::invalid_argument("foo");
@@ -14,15 +13,31 @@ void ThrowsOutOfRange()
     throw std::out_of_range("foo");
 }
 
+
+void ThrowException() { throw std::runtime_error("kaboom"); }
+
 int main(int argc, char* argv[])
 {
+    // Readme example tests
+
+    int x = 1;
+    int y = 2;
+    std::string s = "foo";
+
+    AssertTrue(x == y - 1);
+    AssertEquals(x + 1, y);
+    AssertEquals(s, "foo");
+    AssertThrows(ThrowException(), std::runtime_error);
+    AssertPrints(std::cout << s << "bar", "foobar");
+
+    // Unit testing library tests
+
     AssertTrue(true);
     bool bar = true;
     AssertTrue(bar);
     AssertEquals(13, 13);
     AssertEquals(true, true);
     AssertEquals(false, false);
-    std::string s = "foo";
     AssertEquals("foo", s);
 
     Test test;
