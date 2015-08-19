@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     AssertEquals(text2, failFileAndLine.str() + ": test failed, test\n");
 #else
     AssertEquals(text, "filename(2): test failed\n");
-    AssertEquals(text2, failLine + ": test failed\n");
+    AssertEquals(text2, failFileAndLine.str() + ": test failed\n");
 #endif
 
     AssertEquals(1, test.passed);
