@@ -2,6 +2,7 @@
 #include "UnitTesting.h"
 
 using namespace Wild::UnitTesting;
+using namespace std;
 
 void ThrowsInvalidArgument()
 {
@@ -29,12 +30,14 @@ int main(int argc, char* argv[])
     AssertEquals(s, "foo");
     AssertThrows(ThrowException(), std::runtime_error);
     AssertPrints(std::cout << s << "bar", "foobar");
+    AssertPrints(std::cout << s << "bar" << endl; , "foobar\n");
 
     // Unit testing library tests
 
     AssertTrue(true);
     bool bar = true;
     AssertTrue(bar);
+    AssertFalse(!bar);
     AssertEquals(13, 13);
     AssertEquals(true, true);
     AssertEquals(false, false);

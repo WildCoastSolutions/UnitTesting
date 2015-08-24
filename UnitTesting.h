@@ -100,6 +100,7 @@ namespace Wild
 // Macros for use by user applications
 
 #define AssertTrue(x) AssertTrueWithDetails(x, #x " does not evaluate to true");
+#define AssertFalse(x) AssertTrueWithDetails(!x, #x " evaluates to true");
 
 #ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
 static std::stringstream wildUnitTestingSs;
