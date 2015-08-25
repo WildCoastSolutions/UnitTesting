@@ -5,7 +5,7 @@ This is a simple header only unit testing library that implements the bare minim
 # Sample Code
 
 ```C++
-#include "UnitTesting.h"
+#include "Wild/UnitTesting.h"
 
 using namespace std;
 
@@ -28,18 +28,35 @@ int main(int argc, char* argv[])
 
 ```
 
-# Usage
+# Installing
 
-All you need to use this library is to put ```UnitTesting.h``` in your project and include it in your test code.
+## Download
+
+All you need to use this library is to put ```UnitTesting.h``` in your project and include it in your testing code.
+
+## Nuget
+
+There is also a Nuget package for Visual Studio users, more info at:
+
+https://www.nuget.org/packages/WildUnitTesting
+
+The correct include path to use after installing the Nuget package is
+
+```C++
+#include "Wild/UnitTesting.h"
+```
+
+# Using
 
 It supports:
 
 ```C++
-AssertTrue(value)
-AssertEquals(a, b)
-AssertThrows(code, exception_type)
-AssertPrints(code, string)
-AssertPrintsToStderr(code, string)
+AssertTrue(value)                  // Test passes if value is true
+AssertFalue(value)                 // Test passes if value is false
+AssertEquals(a, b)                 // Test passes if a == b
+AssertThrows(code, exception_type) // Test passes if code throws exception_type
+AssertPrints(code, string)         // Test passes if code prints string
+AssertPrintsToStderr(code, string) // As above but to stderr
 
 EndTest  	// Prints results and exits with the number of failures
 ```
@@ -59,12 +76,20 @@ d:\wildcoast\github\unittesting\test\unittesting.test.cpp(29): test failed, (x =
 ```
 if ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS``` has been defined.
 
-As shown above, additional details can be shown on failure if you compile with the preprocessor flag ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS``` defined.
-This will attempt to print out the values that were compared. Note that the types being compared must be streamable to a stringstream.
+
+## Preprocessor Flags
+
+###WILD_UNITTESTING_SHOW_FAILURE_DETAILS
+
+As shown above, additional details can be shown on failure if you compile with this preprocessor flag. The library will attempt to print out the values that were compared. Note that the types being compared must be streamable to a stringstream.
 
 ```x is streamable if "cout << x" compiles.```
 
 You can add this to your classes by overloading the << operator.
+
+###WILD_UNITTESTING_BREAK_ON_FAIL
+
+If this is defined then a test failure will cause the application to break. This is useful when running in the debugger as the call stack will be available to look at what is going on and what is causing the failure.
 
 ## Platforms
 
