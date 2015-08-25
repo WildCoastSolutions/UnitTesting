@@ -57,6 +57,12 @@ namespace Wild
 #else
                 std::cout << file << "(" << line << "): test failed" << std::endl;
 #endif
+
+#ifdef WILD_UNITTESTING_BREAK_ON_FAIL
+                // This is designed for when the tests are failing and you want to look at the call stack
+                // in the debugger to see what's going on
+                std::abort();
+#endif
                 failed++;
                 total++;
             }
