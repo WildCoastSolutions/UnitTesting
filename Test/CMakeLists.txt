@@ -5,3 +5,8 @@ include_directories (../)
 #link_directories (${WILDLIB_BINARY_DIR}/Example)
 
 add_executable (UnitTesting UnitTesting.Test.cpp)
+
+add_custom_command(
+	TARGET UnitTesting POST_BUILD
+   	COMMAND UnitTesting
+ )
