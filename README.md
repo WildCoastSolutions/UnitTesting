@@ -52,7 +52,7 @@ It supports:
 
 ```C++
 AssertTrue(value)                  // Test passes if value is true
-AssertFalue(value)                 // Test passes if value is false
+AssertFalse(value)                 // Test passes if value is false
 AssertEquals(a, b)                 // Test passes if a == b
 AssertThrows(code, exception_type) // Test passes if code throws exception_type
 AssertPrints(code, string)         // Test passes if code prints string
