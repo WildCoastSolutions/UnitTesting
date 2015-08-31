@@ -95,19 +95,11 @@ If this is defined then a test failure will cause the application to break. This
 
 ## Compiling And Running Tests
 
-Note that the [Unit Testing](https://github.com/WildCoastSolutions/UnitTesting) library is required alongside this library to compile the tests. E.g.
-
-```
-  Wild/
-     CommandLine/
-     UnitTesting/
-```
-
 ### Windows
 
 `UnitTesting.sln` contains the library and test projects, compilation also runs the tests.
 
-It was built with VS2013 but should work with other versions though it does require C++11 features.
+The code was built with VS2013 but should work with other versions.
 
 ### Linux
 
@@ -116,7 +108,7 @@ The Linux build uses cmake, to test the lib it you can clone it, enter the direc
 ```
 cmake .
 make
-Test\CommandLineTest
+Test\UnitTesting
 ```
 
 ## Suggested Use
