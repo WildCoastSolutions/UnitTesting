@@ -8,12 +8,12 @@ nuget {
       licenseUrl: "http://www.opensource.org/licenses/mit-license.php";
       iconUrl: "http://wildcoast.nz/nuget.png";
       requireLicenseAcceptance:false;
-      summary:@"Simple, header only, no dependency unit testing library.";
+      summary:@"Simple, header only, no dependency, cross platform unit testing library.";
       description: @"Simple, header only, no dependency unit testing library with an emphasis on being clean and easy to use.";
       releaseNotes: "";
       projectUrl: "https://github.com/WildCoastSolutions/UnitTesting";
       copyright: Copyright (c) 2014-2015 Wild Coast Solutions. All rights reserved.;
-      tags: { unit testing, native, simple };
+      tags: { unit testing, native, simple, cross platform };
    };
  
    files {
