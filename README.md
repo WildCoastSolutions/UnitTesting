@@ -93,14 +93,30 @@ You can add this to your classes by overloading the << operator.
 
 If this is defined then a test failure will cause the application to break. This is useful when running in the debugger as the call stack will be available to look at what is going on and what is causing the failure.
 
-## Platforms
+## Compiling And Running Tests
 
-It was built on VS2013 but should work on earlier versions, and tested on gcc 4.8.2. Info in this document is VS specific but all the concepts translate to Linux. The Linux build uses cmake, to test the lib it you can clone it, enter the directory and use
+Note that the [Unit Testing](https://github.com/WildCoastSolutions/UnitTesting) library is required alongside this library to compile the tests. E.g.
+
+```
+  Wild/
+     CommandLine/
+     UnitTesting/
+```
+
+### Windows
+
+`UnitTesting.sln` contains the library and test projects, compilation also runs the tests.
+
+It was built with VS2013 but should work with other versions though it does require C++11 features.
+
+### Linux
+
+The Linux build uses cmake, to test the lib it you can clone it, enter the directory and use
 
 ```
 cmake .
 make
-Test\UnitTesting
+Test\CommandLineTest
 ```
 
 ## Suggested Use
