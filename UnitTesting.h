@@ -52,11 +52,13 @@ namespace Wild
             // Mark a test as failed and output useful info about where and what failed
             void Fail(const std::string &file, int line, const std::string &details)
             {
+                std::stringstream output;
 #ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
-                std::cout << file << "(" << line << "): test failed, " << details << std::endl;
+                output << file << "(" << line << "): test failed, " << details << std::endl;
 #else
-                std::cout << file << "(" << line << "): test failed" << std::endl;
+                output << file << "(" << line << "): test failed" << std::endl;
 #endif
+                std::cout << output.str();
 
 #ifdef WILD_UNITTESTING_BREAK_ON_FAIL
                 // This is designed for when the tests are failing and you want to look at the call stack
