@@ -9,9 +9,7 @@
 // This file contains an implementation of a simple unit testing framework. It uses a class
 // to hold information about the running tests, and macros to help with easy testing.
 //
-// WILD_UNITTESTING_SHOW_FAILURE_DETAILS can be defined to print out the values that were 
-// compared in AssertEquals, but note that the types being compared must be streamable to a stringstream. 
-//      i.e. x is streamable if "cout << x" compiles.
+// Project url: https://github.com/WildCoastSolutions/UnitTesting
 
 #ifndef WILD_UNITTESTING_H
 #define WILD_UNITTESTING_H
@@ -20,6 +18,7 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <mutex>
 
 namespace Wild
 {
@@ -34,7 +33,10 @@ namespace Wild
         public:
 
             Test() : passed(0), failed(0), total(0)
-            {}
+            {
+            }
+
+            Test(const Test&) = delete;
 
             // Test whether a boolean condition is true or false and handle the result
             void Assert(bool test, const std::string &file, int line, const std::string &details = 0)
@@ -45,6 +47,7 @@ namespace Wild
             // Mark a test as passed
             void Pass()
             {
+                std::lock_guard<std::recursive_mutex> lock(mutex);
                 passed++;
                 total++;
             }
@@ -52,13 +55,14 @@ namespace Wild
             // Mark a test as failed and output useful info about where and what failed
             void Fail(const std::string &file, int line, const std::string &details)
             {
+                std::lock_guard<std::recursive_mutex> lock(mutex);
                 std::stringstream output;
 #ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
                 output << file << "(" << line << "): test failed, " << details << std::endl;
 #else
                 output << file << "(" << line << "): test failed" << std::endl;
 #endif
-                std::cout << output.str();
+                std::cout << output.str() << std::flush;
 
 #ifdef WILD_UNITTESTING_BREAK_ON_FAIL
                 // This is designed for when the tests are failing and you want to look at the call stack
@@ -78,80 +82,106 @@ namespace Wild
             int passed;
             int failed;
             int total;
+
+            std::recursive_mutex mutex;  // Protect stdout and counts in Pass & Fail from being written to from different threads
         };
 
         // Make sure that each file that includes this header is using the same object.
         // This is useful to keep a global count of passed and failed tests across all files.
-        inline Test& AllTests()
-        {
-            static Test t = Test();
-            return t;
-        }
+        static Test AllTests;
 
         // Helper functions in case the user application wants to use these values
-        inline int Passed() { return AllTests().passed; }
-        inline int Failed() { return AllTests().failed; }
-        inline int Total() { return AllTests().total; }
+        inline int Passed() { return AllTests.passed; }
+        inline int Failed() { return AllTests.failed; }
+        inline int Total() { return AllTests.total; }
     }
 }
 
 
 // Macros to facilitate the testing process
 
-#define Pass() Wild::UnitTesting::AllTests().Pass();
+#define Pass() { \
+    Wild::UnitTesting::AllTests.Pass(); \
+}
 
-#define Fail(details) Wild::UnitTesting::AllTests().Fail(__FILE__, __LINE__, details);
+#define AssertTrueWithDetails(x, details){ \
+    Wild::UnitTesting::AllTests.Assert(x, __FILE__, __LINE__, details); \
+}
 
-#define AssertTrueWithDetails(x, details) Wild::UnitTesting::AllTests().Assert(x, __FILE__, __LINE__, details);
+
+#define Fail(details) { \
+    Wild::UnitTesting::AllTests.Fail(__FILE__, __LINE__, details); \
+}
+
+#ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
+#define InternalAssertEquals(x, y) { \
+    std::stringstream wildUnitTestingSs; \
+    wildUnitTestingSs << "(" << #x << " == " << #y <<")" \
+        << ", actual comparison performed (" << x << " == " << y << ")"; \
+    AssertTrueWithDetails(x == y, wildUnitTestingSs.str()); \
+    wildUnitTestingSs.str(""); \
+} 
+#else
+#define InternalAssertEquals(x, y){ \
+    AssertTrueWithDetails(x == y, "no details"); \
+}
+#endif
 
 
 // Macros for use by user applications
 
-#define AssertTrue(x) AssertTrueWithDetails(x, #x " does not evaluate to true");
-#define AssertFalse(x) AssertTrueWithDetails(!x, #x " evaluates to true");
 
-#ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
-static std::stringstream wildUnitTestingSs;
-#define AssertEquals(x, y) \
-    wildUnitTestingSs << "(" << #x << " == " << #y <<")" \
-        << ", actual comparison performed (" << x << " == " << y << ")"; \
-    AssertTrueWithDetails(x == y, wildUnitTestingSs.str()); \
-    wildUnitTestingSs.str("");
-#else
-#define AssertEquals(x, y) \
-    AssertTrueWithDetails(x == y, "no details");
-#endif
+#define AssertTrue(x) { \
+    AssertTrueWithDetails(x, #x " does not evaluate to true"); \
+}
+
+#define AssertFalse(x) { \
+    AssertTrueWithDetails(!x, #x " evaluates to true"); \
+}
+
+#define AssertEquals(x, y) { \
+    InternalAssertEquals(x, y) \
+} 
 
 
-#define AssertThrows(code, ex) try \
-{ \
-    code; \
-    Fail(""); \
-} \
-catch (ex){ Pass(); } \
-catch (...){ Fail(""); }
+#define AssertThrows(code, ex) { \
+    try \
+    { \
+        code; \
+        Fail(""); \
+    } \
+    catch (ex){ Pass(); } \
+    catch (...){ Fail(""); } \
+}
+
 
 #define AssertPrints(code, x) { \
+    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests.mutex); \
     std::stringstream wildUnitTestingOutput; \
     std::streambuf* wildUnitTestingOriginal = std::cout.rdbuf(wildUnitTestingOutput.rdbuf()); \
     code; \
     std::string wildUnitTestingOutputText = wildUnitTestingOutput.str(); \
     wildUnitTestingOutput.str(""); \
     std::cout.rdbuf(wildUnitTestingOriginal); \
-    AssertEquals(wildUnitTestingOutputText, x) \
+    InternalAssertEquals(wildUnitTestingOutputText, x) \
 }
 
+
 #define AssertPrintsToStderr(code, x) { \
+    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests.mutex); \
     std::stringstream wildUnitTestingOutput; \
     std::streambuf* wildUnitTestingOriginal = std::cerr.rdbuf(wildUnitTestingOutput.rdbuf()); \
     code; \
     std::string wildUnitTestingOutputText = wildUnitTestingOutput.str(); \
     wildUnitTestingOutput.str(""); \
     std::cerr.rdbuf(wildUnitTestingOriginal); \
-    AssertEquals(wildUnitTestingOutputText, x) \
+    InternalAssertEquals(wildUnitTestingOutputText, x) \
 }
 
-#define EndTest Wild::UnitTesting::AllTests().Results(); return Wild::UnitTesting::AllTests().failed;
+#define EndTest { \
+    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests.mutex); \
+    Wild::UnitTesting::AllTests.Results(); return Wild::UnitTesting::AllTests.failed; \
+}
 
 
 

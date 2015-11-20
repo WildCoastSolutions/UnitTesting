@@ -1,5 +1,7 @@
 
 #include "UnitTesting.h"
+#include <thread>
+#include <set>
 
 using namespace Wild::UnitTesting;
 using namespace std;
@@ -17,6 +19,96 @@ void ThrowsOutOfRange()
 
 void ThrowException() { throw std::runtime_error("kaboom"); }
 
+
+// threads create a bunch of test failures so we can check that the operation of the
+// library is thread safe - that the output and pass/fails counts are correct
+void Thread1()
+{
+    for (int i = 0; i < 100; i++)
+    {
+        AssertTrue(false);
+        AssertFalse(true);
+        AssertEquals(1, 2);
+        AssertPrints(cout << "foo", "bar");
+        AssertPrintsToStderr(cerr << "bar", "foo");
+        AssertThrows(throw invalid_argument("foo"), out_of_range);
+    }
+}
+
+void Thread2()
+{
+    for (int i = 0; i < 100; i++)
+    {
+        AssertTrue(false);
+        AssertFalse(true);
+        AssertEquals(1, 2);
+        AssertPrints(cout << "foo", "bar");
+        AssertPrintsToStderr(cerr << "bar", "foo");
+        AssertThrows(throw invalid_argument("foo"), out_of_range);
+    }
+}
+
+void TestThreadSafety()
+{
+    // output acts as cout from here, and will be accessed concurrently from both threads
+    // which is a good test of whether the library can handle it
+    stringstream output;
+    streambuf* original = std::cout.rdbuf(output.rdbuf());
+    stringstream outputStderr;
+    streambuf* originalStderr = std::cerr.rdbuf(outputStderr.rdbuf());
+
+    thread t1(Thread1);
+    thread t2(Thread2);
+    t2.join();
+    t1.join();
+
+    std::cout.rdbuf(original);
+    std::cerr.rdbuf(originalStderr);
+
+    // error printouts should not be interleaved, and failure count should be correct
+    string line;
+
+    // These tests below check the line length to see if any lines have been interleaved by
+    // concurrent access to stdout. It's not guaranteed to produce a failure, but often does,
+    // so we can be confident that the thread safety works if there are no failures across
+    // multiple test runs.
+
+    // Also, AssertPrints flat out crashes if the code isn't thread safe
+    
+#ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
+    // Possible sizes of the failure details lines created by the failed tests in the threads.
+    // Different environments have different ways of representing the filename, hence the length differences.
+    set<size_t> possibleLineLengths = {
+        107, 154, 98, 76, 122,  // WIN32
+        70, 61, 117, 39, 85,    // X64
+        118, 109, 133, 165, 87, // GCC
+    };
+    while (std::getline(output, line, '\n')) {
+        AssertTrue(possibleLineLengths.find(line.size()) != possibleLineLengths.end());
+    }
+    while (std::getline(outputStderr, line, '\n')) {
+        AssertTrue(possibleLineLengths.find(line.size()) != possibleLineLengths.end());
+    }
+#else
+    // Possible sizes of the failure details lines created by the failed tests in the threads.
+    // Different environments have different ways of representing the filename, hence the length differences.
+    set<size_t> possibleLineLengths = {
+        74,     // WIN32
+        37,     // X64
+        85      // GCC
+    };
+    while (std::getline(output, line, '\n')) {
+        AssertTrue(possibleLineLengths.find(line.size()) != possibleLineLengths.end());
+    }
+    while (std::getline(outputStderr, line, '\n')) {
+        AssertTrue(possibleLineLengths.find(line.size()) != possibleLineLengths.end());
+    }
+#endif
+
+    AssertEquals(Failed(), 1200);
+    
+}
+
 int main(int argc, char* argv[])
 {
     // Readme example tests
@@ -33,6 +125,8 @@ int main(int argc, char* argv[])
     AssertPrints(std::cout << s << "bar" << endl; , "foobar\n");
 
     // Unit testing library tests
+
+    TestThreadSafety();
 
     AssertTrue(true);
     bool bar = true;
@@ -75,8 +169,9 @@ int main(int argc, char* argv[])
     AssertThrows(throw std::out_of_range("foo"), std::out_of_range);
     AssertThrows(ThrowsOutOfRange(), std::out_of_range);
     AssertThrows(ThrowsInvalidArgument(), std::invalid_argument);
+    //AssertPrints(Wild::UnitTesting::AllTests().Results(), "223 passed, 201 failed, 424 total\n");
 
-    if (Failed() == 1)  // we called Fail directly to test the output so we expect one failure
+    if (Failed() > 0)  // we called Fail directly to test the output so we expect one failure, plus all the threading test fails
     {
         std::cout << "Unit testing tests passed" << std::endl;
         return 0;
