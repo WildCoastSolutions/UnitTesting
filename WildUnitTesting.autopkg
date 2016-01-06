@@ -1,7 +1,7 @@
 nuget {
    nuspec {
       id = WildUnitTesting;
-      version : 1.0.0.0;
+      version : 1.0.1.0;
       title: Wild Coast Unit Testing;
       authors: {Wild Coast Solutions};
       owners: {Wild Coast Solutions};
@@ -12,8 +12,8 @@ nuget {
       description: @"Simple, header only, no dependency unit testing library with an emphasis on being clean and easy to use.";
       releaseNotes: "";
       projectUrl: "https://github.com/WildCoastSolutions/UnitTesting";
-      copyright: Copyright (c) 2014-2015 Wild Coast Solutions. All rights reserved.;
-      tags: { unit testing, native, simple, cross platform };
+      copyright: Copyright (c) 2014-2016 Wild Coast Solutions. All rights reserved.;
+      tags: { unit testing, C++, native, simple, header only, no dependency, cross platform };
    };
  
    files {
