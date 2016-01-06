@@ -1,8 +1,12 @@
 # C++ Unit Testing
 
-This is a simple, header only, no dependency, cross platform unit testing library that implements the bare minimum functionality needed to effectively unit test. It is the result of having built a much larger and more comprehensive unit testing library and realising that most of it went unused and the extra boilerplate wasn't adding much.
+This is a simple, header only, no dependency, cross platform unit testing library.
 
 More on this library and others like it can be found at [http://wildcoast.nz/open-source](http://wildcoast.nz/open-source).
+
+[Download the latest version directly (right click, download)](https://raw.githubusercontent.com/WildCoastSolutions/UnitTesting/master/UnitTesting.h).
+
+Travis CI build & test status: [![Build Status](https://api.travis-ci.org/WildCoastSolutions/UnitTesting.svg?branch=master)](https://travis-ci.org/WildCoastSolutions/UnitTesting)
 
 # Sample Code
 
