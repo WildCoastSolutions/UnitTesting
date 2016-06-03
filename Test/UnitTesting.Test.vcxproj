@@ -187,7 +187,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AdditionalTestFile.cpp" />
     <ClCompile Include="UnitTesting.Test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Tests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

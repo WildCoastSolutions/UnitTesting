@@ -88,12 +88,21 @@ namespace Wild
 
         // Make sure that each file that includes this header is using the same object.
         // This is useful to keep a global count of passed and failed tests across all files.
-        static Test AllTests;
+        class AllTests : public Test
+        {
+        public:
+            AllTests(){}
+            static AllTests& instance()
+            {
+                static AllTests instance;
+                return instance;
+            }
+        };
 
         // Helper functions in case the user application wants to use these values
-        inline int Passed() { return AllTests.passed; }
-        inline int Failed() { return AllTests.failed; }
-        inline int Total() { return AllTests.total; }
+        inline int Passed() { return AllTests::instance().passed; }
+        inline int Failed() { return AllTests::instance().failed; }
+        inline int Total() { return AllTests::instance().total; }
     }
 }
 
@@ -101,16 +110,16 @@ namespace Wild
 // Macros to facilitate the testing process
 
 #define Pass() { \
-    Wild::UnitTesting::AllTests.Pass(); \
+    Wild::UnitTesting::AllTests::instance().Pass(); \
 }
 
 #define AssertTrueWithDetails(x, details){ \
-    Wild::UnitTesting::AllTests.Assert(x, __FILE__, __LINE__, details); \
+    Wild::UnitTesting::AllTests::instance().Assert(x, __FILE__, __LINE__, details); \
 }
 
 
 #define Fail(details) { \
-    Wild::UnitTesting::AllTests.Fail(__FILE__, __LINE__, details); \
+    Wild::UnitTesting::AllTests::instance().Fail(__FILE__, __LINE__, details); \
 }
 
 #ifdef WILD_UNITTESTING_SHOW_FAILURE_DETAILS
@@ -156,7 +165,7 @@ namespace Wild
 
 
 #define AssertPrints(code, x) { \
-    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests.mutex); \
+    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests::instance().mutex); \
     std::stringstream wildUnitTestingOutput; \
     std::streambuf* wildUnitTestingOriginal = std::cout.rdbuf(wildUnitTestingOutput.rdbuf()); \
     code; \
@@ -168,7 +177,7 @@ namespace Wild
 
 
 #define AssertPrintsToStderr(code, x) { \
-    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests.mutex); \
+    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests::instance().mutex); \
     std::stringstream wildUnitTestingOutput; \
     std::streambuf* wildUnitTestingOriginal = std::cerr.rdbuf(wildUnitTestingOutput.rdbuf()); \
     code; \
@@ -179,8 +188,8 @@ namespace Wild
 }
 
 #define EndTest { \
-    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests.mutex); \
-    Wild::UnitTesting::AllTests.Results(); return Wild::UnitTesting::AllTests.failed; \
+    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests::instance().mutex); \
+    Wild::UnitTesting::AllTests::instance().Results(); return Wild::UnitTesting::AllTests::instance().failed; \
 }
 
 

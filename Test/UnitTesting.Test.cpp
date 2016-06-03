@@ -1,5 +1,6 @@
 
 #include "UnitTesting.h"
+#include "Tests.h"
 #include <thread>
 #include <set>
 
@@ -169,7 +170,12 @@ int main(int argc, char* argv[])
     AssertThrows(throw std::out_of_range("foo"), std::out_of_range);
     AssertThrows(ThrowsOutOfRange(), std::out_of_range);
     AssertThrows(ThrowsInvalidArgument(), std::invalid_argument);
-    //AssertPrints(Wild::UnitTesting::AllTests().Results(), "223 passed, 201 failed, 424 total\n");
+    AssertPrints(Wild::UnitTesting::AllTests::instance().Results(), "1223 passed, 1201 failed, 2424 total\n");
+
+    AdditionalTests();
+
+    // Two additional tests should have passed
+    AssertPrints(Wild::UnitTesting::AllTests::instance().Results(), "1225 passed, 1201 failed, 2426 total\n");
 
     if (Failed() > 0)  // we called Fail directly to test the output so we expect one failure, plus all the threading test fails
     {
