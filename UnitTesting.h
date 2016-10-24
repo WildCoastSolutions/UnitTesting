@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <mutex>
 #include <functional>
+#include <thread>
 
 namespace Wild
 {
@@ -205,7 +206,7 @@ namespace Wild
     t1.join(); \
     std::string wildUnitTestingOutputText = wildUnitTestingOutput.str(); \
     wildUnitTestingOutput.str(""); \
-    std::cerr.rdbuf(wildUnitTestingOriginal); \
+    std::cout.rdbuf(wildUnitTestingOriginal); \
 }
 
 #define EndTest { \
