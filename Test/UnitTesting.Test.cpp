@@ -110,6 +110,13 @@ void TestThreadSafety()
     
 }
 
+std::mutex m;
+void ThreadedFunction()
+{
+    std::lock_guard<std::mutex> lock(m);
+    cout << "I'm threaded!" << endl;
+}
+
 int main(int argc, char* argv[])
 {
     // Readme example tests
@@ -176,6 +183,8 @@ int main(int argc, char* argv[])
 
     // Two additional tests should have passed
     AssertPrints(Wild::UnitTesting::AllTests::instance().Results(), "1225 passed, 1201 failed, 2426 total\n");
+
+    AssertThreadSafe(ThreadedFunction(), 500);
 
     if (Failed() > 0)  // we called Fail directly to test the output so we expect one failure, plus all the threading test fails
     {

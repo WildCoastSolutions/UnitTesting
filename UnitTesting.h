@@ -19,6 +19,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <mutex>
+#include <functional>
 
 namespace Wild
 {
@@ -185,6 +186,26 @@ namespace Wild
     wildUnitTestingOutput.str(""); \
     std::cerr.rdbuf(wildUnitTestingOriginal); \
     InternalAssertEquals(wildUnitTestingOutputText, x) \
+}
+
+#define AssertThreadSafe(code, count) {\
+    std::lock_guard<std::recursive_mutex> wildUnitTestingLock(Wild::UnitTesting::AllTests::instance().mutex); \
+    std::stringstream wildUnitTestingOutput; \
+    std::streambuf* wildUnitTestingOriginal = std::cout.rdbuf(wildUnitTestingOutput.rdbuf()); \
+    std::function<void()> f = [](){ \
+        for (int i = 0; i < count; i++) { \
+            code; \
+        } \
+    }; \
+    std::thread t1(f); \
+    std::thread t2(f); \
+    std::thread t3(f); \
+    t3.join(); \
+    t2.join(); \
+    t1.join(); \
+    std::string wildUnitTestingOutputText = wildUnitTestingOutput.str(); \
+    wildUnitTestingOutput.str(""); \
+    std::cerr.rdbuf(wildUnitTestingOriginal); \
 }
 
 #define EndTest { \
