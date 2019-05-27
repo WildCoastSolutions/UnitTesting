@@ -64,7 +64,7 @@ AssertThrows(code, exception_type) // Test passes if code throws exception_type
 AssertPrints(code, string)         // Test passes if code prints string
 AssertPrintsToStderr(code, string) // As above but to stderr
 AssertThreadSafe(code, iterations) // Spawns three threads that each run the code <iterations> times. 
-				      Failure is a crash or deadlock.
+				   // Failure is a crash or deadlock.
 
 EndTest  	// Prints results and exits with the number of failures
 ```
