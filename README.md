@@ -2,7 +2,7 @@
 
 This is a simple, header only, no dependency, cross platform unit testing library.
 
-More on this library and others like it can be found at [http://wildcoast.nz/open-source](http://wildcoast.nz/open-source).
+More on this library and others like it can be found at [https://wildcoast.nz/open-source](http://wildcoast.nz/open-source).
 
 [Download the latest version directly (right click, download)](https://raw.githubusercontent.com/WildCoastSolutions/UnitTesting/master/UnitTesting.h).
 
@@ -63,6 +63,8 @@ AssertEquals(a, b)                 // Test passes if a == b
 AssertThrows(code, exception_type) // Test passes if code throws exception_type
 AssertPrints(code, string)         // Test passes if code prints string
 AssertPrintsToStderr(code, string) // As above but to stderr
+AssertThreadSafe(code, iterations) // Spawns three threads that each run the code <iterations> times. 
+				      Failure is a crash or deadlock.
 
 EndTest  	// Prints results and exits with the number of failures
 ```
@@ -85,7 +87,7 @@ if ```WILD_UNITTESTING_SHOW_FAILURE_DETAILS``` has been defined.
 
 ## Preprocessor Flags
 
-###WILD_UNITTESTING_SHOW_FAILURE_DETAILS
+### WILD_UNITTESTING_SHOW_FAILURE_DETAILS
 
 As shown above, additional details can be shown on failure if you compile with this preprocessor flag. The library will attempt to print out the values that were compared. Note that the types being compared must be streamable to a stringstream.
 
@@ -93,7 +95,7 @@ As shown above, additional details can be shown on failure if you compile with t
 
 You can add this to your classes by overloading the << operator.
 
-###WILD_UNITTESTING_BREAK_ON_FAIL
+### WILD_UNITTESTING_BREAK_ON_FAIL
 
 If this is defined then a test failure will cause the application to break. This is useful when running in the debugger as the call stack will be available to look at what is going on and what is causing the failure.
 
